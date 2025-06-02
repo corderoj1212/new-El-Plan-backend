@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+sqlmodel
+python-dotenv
+bcrypt
+python-multipart
+cryptography
+email-validator
+pyqrcode
+pymysql

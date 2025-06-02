@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../app:/app/app
+    env_file:
+      - ../.env
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks:
+      - elplan_net
+
+  mariadb:
+    image: mariadb:11.4.3
+    restart: always
+    env_file:
+      - ../.env
+    ports:
+      - "8081:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - elplan_net
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  elplan_net:
+    name: elplan_net
+
+volumes:
+  db_data:
